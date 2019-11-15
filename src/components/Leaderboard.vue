@@ -3,12 +3,24 @@
     <v-row align="start" justify="center">
       <h2>Leaderboard</h2>
     </v-row>
+
     <v-row align="start" justify="center">
       <div v-if="loading">
         <img src="../assets/ping-pong.gif" />
       </div>
 
-      <v-data-table :headers="headers" :items="players" :items-per-page="25"></v-data-table>
+      <v-data-table :headers="headers" :items="players" :items-per-page="25" :fixed-header="true">
+        <template v-slot:body="{ items }">
+          <tbody>
+            <tr v-for="item in items" :key="item._id">
+              <td>{{item.name}}</td>
+              <td align="center">{{item.matches_won}}</td>
+              <td align="center">{{item.matches.length - item.matches_won}}</td>
+              <td>Today</td>
+            </tr>
+          </tbody>
+        </template>
+      </v-data-table>
     </v-row>
   </v-container>
 </template>
@@ -25,22 +37,22 @@ export default {
         {
           text: 'Name',
           align: 'start',
-          value: 'name',
+          sortable: false,
         },
         {
           text: 'Matches Won',
           align: 'center',
-          value: 'matches_won',
+          sortable: false,
         },
         {
           text: 'Matches Lost',
           align: 'center',
-          value: 'matches_lost',
+          sortable: false,
         },
         {
           text: 'Last Played',
-          align: 'center',
-          value: null,
+          align: 'start',
+          sortable: false,
         },
       ],
       players: [],
@@ -67,8 +79,12 @@ img {
   border-radius: 50%;
   width: 15%;
 }
-
-table {
-  background-color: olive;
+table > tbody > tr {
+  td:nth-child(2) {
+    color: #8bc34a;
+  }
+  td:nth-child(3) {
+    color: #F44336;
+  }
 }
 </style>
