@@ -1,10 +1,11 @@
 import Vue from 'vue';
+import axios from 'axios';
 import App from './App.vue';
 import router from './router';
 import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false;
-
+axios.defaults.baseURL = 'http://localhost:8080/ping-pong';
 new Vue({
   router,
   vuetify,

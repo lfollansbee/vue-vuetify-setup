@@ -27,23 +27,17 @@
     </v-app-bar>
 
     <v-content>
-      <Leaderboard/>
+      <router-view></router-view>
     </v-content>
   </v-app>
 </template>
 
 <script>
-import Leaderboard from '@/components/Leaderboard.vue';
-
 export default {
   name: 'App',
 
-  components: {
-    Leaderboard,
-  },
+  components: {},
 
-  data: () => ({
-    //
-  }),
+  data: () => ({}),
 };
 </script>

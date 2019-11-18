@@ -12,10 +12,14 @@
       <v-data-table :headers="headers" :items="players" :items-per-page="25" :fixed-header="true">
         <template v-slot:body="{ items }">
           <tbody>
-            <tr v-for="item in items" :key="item._id">
-              <td>{{item.name}}</td>
-              <td align="center">{{item.matches_won}}</td>
-              <td align="center">{{item.matches.length - item.matches_won}}</td>
+            <tr v-for="player in items" :key="player._id">
+              <td>
+                <router-link :to="{ name: 'player', params: {playerId: player._id}}">
+                  {{player.name}}
+                </router-link>
+              </td>
+              <td align="center">{{player.matches_won}}</td>
+              <td align="center">{{player.matches.length - player.matches_won}}</td>
               <td>Today</td>
             </tr>
           </tbody>
@@ -26,7 +30,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import pingPongApi from '../services/PingPongApi';
 
 export default {
@@ -67,6 +70,7 @@ export default {
         this.players = response;
       },
       (error) => {
+        console.error(error);
         this.loading = false;
       }
     );
@@ -84,7 +88,7 @@ table > tbody > tr {
     color: #8bc34a;
   }
   td:nth-child(3) {
-    color: #F44336;
+    color: #f44336;
   }
 }
 </style>

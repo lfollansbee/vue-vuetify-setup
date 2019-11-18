@@ -5,21 +5,17 @@ import axios from 'axios';
 export default {
 
   async fetchPlayerInfo() {
-    const response = await axios.get('http://localhost:8080/ping-pong/players');
-
-    return response.data.players.map((player) => {
-      player.matches_lost = player.matches.length - player.matches_won;
-      return player;
-    });
+    const response = await axios.get('/players');
+    return response.data.players;
   },
 
   async fetchPlayer(id) {
-    const response = await axios.get(`player/${id}`);
-    return response.data;
+    const playerResponse = await axios.get(`/player/${id}`);
+    return playerResponse.data.player;
   },
 
   async fetchMatches() {
-    const response = await axios.get('matches');
+    const response = await axios.get('/matches');
     return response.data;
   },
 };
