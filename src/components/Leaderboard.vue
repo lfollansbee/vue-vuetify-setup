@@ -1,32 +1,29 @@
 <template>
-  <v-container fluid>
-    <v-row align="start" justify="center">
-      <h2>Leaderboard</h2>
-    </v-row>
+  <v-card outlined align="center">
+    <v-card-title class="justify-center">Leaderboard</v-card-title>
+    <v-divider></v-divider>
 
-    <v-row align="start" justify="center">
-      <div v-if="loading">
-        <img src="../assets/ping-pong.gif" />
-      </div>
+    <div v-if="loading">
+      <img src="../assets/ping-pong.gif" />
+    </div>
 
-      <v-data-table :headers="headers" :items="players" :items-per-page="25" :fixed-header="true">
-        <template v-slot:body="{ items }">
-          <tbody>
-            <tr v-for="player in items" :key="player._id">
-              <td>
-                <router-link :to="{ name: 'player', params: {playerId: player._id}}">
-                  {{player.name}}
-                </router-link>
-              </td>
-              <td align="center">{{player.matches_won}}</td>
-              <td align="center">{{player.matches.length - player.matches_won}}</td>
-              <td>{{player.last_played | moment("from", "now")}}</td>
-            </tr>
-          </tbody>
-        </template>
-      </v-data-table>
-    </v-row>
-  </v-container>
+    <v-data-table :headers="headers" :items="players" :items-per-page="25" :fixed-header="true">
+      <template v-slot:body="{ items }">
+        <tbody>
+          <tr v-for="player in items" :key="player._id">
+            <td>
+              <router-link :to="{ name: 'player', params: {playerId: player._id}}">
+                {{player.name}}
+              </router-link>
+            </td>
+            <td align="center">{{player.matches_won}}</td>
+            <td align="center">{{player.matches.length - player.matches_won}}</td>
+            <td>{{player.last_played | moment("from", "now")}}</td>
+          </tr>
+        </tbody>
+      </template>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script>

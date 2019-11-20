@@ -9,22 +9,24 @@ export default {
 
   async fetchPlayer(id) {
     const playerResponse = await axios.get(`/player/${id}`);
-    const activityResponse = await axios.get(`/activity?player_id=${id}`);
+    return playerResponse.data.player;
+  },
 
-    const activity = activityResponse.data.activity.map((match) => {
-      const split = match.result.split(' ');
-      const winner = split[0];
-      return {
-        date: match.date,
-        result: match.result,
-        won: winner === playerResponse.data.player.name,
-      };
-    });
-
-    return {
-      player: playerResponse.data.player,
-      activity,
-    };
+  async fetchActivity(id, playerName) {
+    const urlParams = id ? `?player_id=${id}` : '';
+    const res = await axios.get(`/activity${urlParams}`);
+    if (id) {
+      return res.data.activity.map((match) => {
+        const split = match.result.split(' ');
+        const winner = split[0];
+        return {
+          date: match.date,
+          result: match.result,
+          won: winner === playerName,
+        };
+      });
+    }
+    return res.data.activity;
   },
 
   async fetchMatches() {

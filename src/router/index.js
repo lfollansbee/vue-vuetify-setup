@@ -1,20 +1,21 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Leaderboard from '../views/Leaderboard.vue';
+import Home from '../views/Home.vue';
 import Player from '../views/Player.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    component: Leaderboard,
-    name: 'leaderBoard',
+    component: Home,
+    name: 'home',
     path: '/',
   },
   {
     component: Player,
     name: 'player',
     path: '/player/:playerId',
+    props: true,
   },
 ];
 
