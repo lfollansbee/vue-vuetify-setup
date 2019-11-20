@@ -1,6 +1,3 @@
-/* eslint-disable arrow-body-style */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-undef */
 import axios from 'axios';
 
 export default {
@@ -14,14 +11,13 @@ export default {
     const playerResponse = await axios.get(`/player/${id}`);
     const activityResponse = await axios.get(`/activity?player_id=${id}`);
 
-    // eslint-disable-next-line arrow-parens
-    const activity = activityResponse.data.activity.map(match => {
-      const split = match.split(' ');
+    const activity = activityResponse.data.activity.map((match) => {
+      const split = match.result.split(' ');
       const winner = split[0];
-
       return {
+        date: match.date,
+        result: match.result,
         won: winner === playerResponse.data.player.name,
-        activity: match,
       };
     });
 
