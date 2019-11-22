@@ -2,8 +2,9 @@ import axios from 'axios';
 
 export default {
 
-  async fetchAllPlayers() {
-    const response = await axios.get('/players');
+  async fetchAllPlayers(sortField) {
+    const urlParams = sortField ? `?sortField=${sortField}` : '';
+    const response = await axios.get(`/players${urlParams}`);
     return response.data.players;
   },
 
@@ -32,5 +33,12 @@ export default {
   async createNewMatch() {
     const response = await axios.get('/matches');
     return response.data;
+  },
+
+  async registerNewPlayer(newPlayerName) {
+    const response = await axios.post('/players', {
+      name: newPlayerName,
+    });
+    return response.data.player;
   },
 };
