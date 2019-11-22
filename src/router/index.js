@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Player from '../views/Player.vue';
+import NewMatch from '../views/NewMatch.vue';
 
 Vue.use(VueRouter);
 
@@ -15,6 +16,12 @@ const routes = [
     component: Player,
     name: 'player',
     path: '/player/:playerId',
+    props: true,
+  },
+  {
+    component: NewMatch,
+    name: 'newMatch',
+    path: '/new-match',
     props: true,
   },
 ];

@@ -1,21 +1,19 @@
 <template>
-  <v-app >
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <router-link to="/"><v-toolbar-title>DGC Ping Pong</v-toolbar-title></router-link>
+  <v-app>
+    <v-app-bar app color="primary" dark>
+      <router-link to="/">
+        <v-toolbar-title>DGC Ping Pong</v-toolbar-title>
+      </router-link>
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
+      <router-link to="/new-match">
+        <v-btn large color="success">New Match</v-btn>
+      </router-link>
 
-      <v-btn icon>
+      <!-- <v-btn icon>
         <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+      </v-btn>-->
     </v-app-bar>
 
     <v-content>
@@ -27,9 +25,7 @@
 <script>
 export default {
   name: 'App',
-
   components: {},
-
   data: () => ({}),
 };
 </script>
@@ -38,5 +34,8 @@ export default {
 .v-toolbar__title {
   color: white;
   font-weight: bold;
+}
+.router-link-exact-active button {
+  display: none;
 }
 </style>

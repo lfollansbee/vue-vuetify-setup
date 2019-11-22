@@ -1,7 +1,9 @@
 <template>
-  <div>
-    <h1>New Match</h1>
-  </div>
+  <v-container class="newMatch">
+    <v-row align="start" justify="center">
+      <h2>Start a New Match</h2>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export default {
 
-  async fetchPlayerInfo() {
+  async fetchAllPlayers() {
     const response = await axios.get('/players');
     return response.data.players;
   },
@@ -29,7 +29,7 @@ export default {
     return res.data.activity;
   },
 
-  async fetchMatches() {
+  async createNewMatch() {
     const response = await axios.get('/matches');
     return response.data;
   },

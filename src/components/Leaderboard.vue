@@ -61,7 +61,7 @@ export default {
   },
   mounted() {
     this.loading = true;
-    pingPongApi.fetchPlayerInfo().then(
+    pingPongApi.fetchAllPlayers().then(
       (response) => {
         this.loading = false;
         this.players = response;
