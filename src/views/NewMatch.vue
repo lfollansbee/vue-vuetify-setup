@@ -5,7 +5,7 @@
     </v-row>
     <v-row>
       <v-col cols='12' lg='4'>
-        <CurrentPlayer
+        <PickPlayerCard
           v-bind:opposingPlayer="player2"
           v-bind:players="players"
           v-bind:playerNumber="1"
@@ -48,7 +48,7 @@
       </v-col>
 
       <v-col cols="12" lg="4">
-        <CurrentPlayer
+        <PickPlayerCard
           v-bind:opposingPlayer="player1"
           v-bind:players="players"
           v-bind:playerNumber="2"
@@ -62,13 +62,13 @@
 </template>
 
 <script>
-import CurrentPlayer from '@/components/CurrentPlayer.vue';
+import PickPlayerCard from '@/components/PickPlayerCard.vue';
 import pingPongApi from '../services/PingPongApi';
 
 export default {
   name: 'newMatch',
   components: {
-    CurrentPlayer,
+    PickPlayerCard,
   },
   data() {
     return {

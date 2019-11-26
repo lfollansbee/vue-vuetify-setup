@@ -38,6 +38,11 @@ export default {
     return response.data.match;
   },
 
+  async fetchMatch(id) {
+    const response = await axios.get(`/match/${id}`);
+    return response.data.match;
+  },
+
   async registerNewPlayer(newPlayerName) {
     const response = await axios.post('/players', {
       name: newPlayerName,
