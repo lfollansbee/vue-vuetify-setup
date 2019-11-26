@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import pingPongApi from '../services/PingPongApi';
+import PlayerService from '../services/PlayerService';
 
 export default {
   name: 'Leaderboard',
@@ -61,7 +61,7 @@ export default {
   },
   mounted() {
     this.loading = true;
-    pingPongApi.fetchAllPlayers().then(
+    PlayerService.fetchAllPlayers().then(
       (response) => {
         this.loading = false;
         this.players = response;

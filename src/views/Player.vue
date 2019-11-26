@@ -17,7 +17,8 @@
 <script>
 import PlayerStats from '@/components/PlayerStats.vue';
 import Activity from '@/components/Activity.vue';
-import pingPongApi from '../services/PingPongApi';
+import PingPongApi from '../services/PingPongApi';
+import PlayerService from '../services/PlayerService';
 
 export default {
   name: 'player',
@@ -36,10 +37,10 @@ export default {
   async mounted() {
     this.loading = true;
     try {
-      const response = await pingPongApi.fetchPlayer(this.playerId);
+      const response = await PlayerService.fetchPlayer(this.playerId);
       this.player = response;
 
-      const activity = await pingPongApi.fetchActivity(
+      const activity = await PingPongApi.fetchActivity(
         this.playerId,
         this.player.name
       );

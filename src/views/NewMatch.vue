@@ -63,7 +63,8 @@
 
 <script>
 import PickPlayerCard from '@/components/PickPlayerCard.vue';
-import pingPongApi from '../services/PingPongApi';
+import MatchService from '../services/MatchService';
+import PlayerService from '../services/PlayerService';
 
 export default {
   name: 'newMatch',
@@ -88,7 +89,7 @@ export default {
   },
   mounted() {
     this.loading = true;
-    pingPongApi.fetchAllPlayers('name').then(
+    PlayerService.fetchAllPlayers('name').then(
       (response) => {
         this.loading = false;
         this.players = response;
@@ -117,7 +118,7 @@ export default {
       return length === 0;
     },
     async startMatch() {
-      const newMatch = await pingPongApi.createNewMatch(this.player1, this.player2);
+      const newMatch = await MatchService.createNewMatch(this.player1, this.player2);
       this.$router.push({ name: 'match', params: { matchId: newMatch._id } });
     },
     async submitName() {
@@ -128,7 +129,7 @@ export default {
           : 'This name is already registered. Please register with a unique name.';
       } else {
         this.valid = true;
-        const newPlayer = await pingPongApi.registerNewPlayer(this.formName);
+        const newPlayer = await PlayerService.registerNewPlayer(this.formName);
 
         this.players.push(newPlayer);
         this.activePlayer = newPlayer._id;

@@ -39,7 +39,9 @@
 </template>
 
 <script>
-import pingPongApi from '../services/PingPongApi';
+import GameService from '../services/GameService';
+import MatchService from '../services/MatchService';
+import PlayerService from '../services/PlayerService';
 import CurrentPlayer from '@/components/CurrentPlayer.vue';
 
 export default {
@@ -61,11 +63,11 @@ export default {
   },
   async mounted() {
     try {
-      const response = await pingPongApi.fetchMatch(this.matchId);
+      const response = await MatchService.fetchMatch(this.matchId);
       this.match = response;
 
-      this.player1 = await pingPongApi.fetchPlayer(response.player1_id);
-      this.player2 = await pingPongApi.fetchPlayer(response.player2_id);
+      this.player1 = await PlayerService.fetchPlayer(response.player1_id);
+      this.player2 = await PlayerService.fetchPlayer(response.player2_id);
     } catch (err) {
       console.error(err);
     }
@@ -73,7 +75,7 @@ export default {
   methods: {
     async submitGame() {
       try {
-        const res = await pingPongApi.submitGame(this.matchId, this.player1_score, this.player2_score);
+        const res = await GameService.submitGame(this.matchId, this.player1_score, this.player2_score);
         this.player1_games_won = res.player1_games_won;
         this.player2_games_won = res.player2_games_won;
         this.player1_score = 0;
