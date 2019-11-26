@@ -6,6 +6,7 @@
     <v-row>
       <v-col cols='12' lg='4'>
         <CurrentPlayer
+          v-bind:opposingPlayer="player2"
           v-bind:players="players"
           v-bind:playerNumber="1"
           v-bind:selectedPlayer="player1"
@@ -19,7 +20,8 @@
           <v-btn
           x-large
           class='success'
-          :disabled="!readyToPlay">
+          :disabled="!readyToPlay"
+          @click="startMatch()">
             START
           </v-btn>
         </div>
@@ -47,6 +49,7 @@
 
       <v-col cols="12" lg="4">
         <CurrentPlayer
+          v-bind:opposingPlayer="player1"
           v-bind:players="players"
           v-bind:playerNumber="2"
           v-bind:selectedPlayer="player2"
@@ -113,6 +116,10 @@ export default {
       );
       return length === 0;
     },
+    async startMatch() {
+      const newMatch = await pingPongApi.createNewMatch(this.player1, this.player2);
+      this.$router.push({ name: 'match', params: { matchId: newMatch._id } });
+    },
     async submitName() {
       if (!this.isNameUnique(this.formName) || !this.formName.length) {
         this.valid = false;
@@ -122,6 +129,7 @@ export default {
       } else {
         this.valid = true;
         const newPlayer = await pingPongApi.registerNewPlayer(this.formName);
+
         this.players.push(newPlayer);
         this.activePlayer = newPlayer._id;
         this.selectedName = newPlayer.name;

@@ -30,9 +30,12 @@ export default {
     return res.data.activity;
   },
 
-  async createNewMatch() {
-    const response = await axios.get('/matches');
-    return response.data;
+  async createNewMatch(player1, player2) {
+    const response = await axios.post('/matches', {
+      player1_id: player1._id,
+      player2_id: player2._id,
+    });
+    return response.data.match;
   },
 
   async registerNewPlayer(newPlayerName) {

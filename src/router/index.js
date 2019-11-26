@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Player from '../views/Player.vue';
 import NewMatch from '../views/NewMatch.vue';
+import Match from '../views/Match.vue';
 
 Vue.use(VueRouter);
 
@@ -22,6 +23,12 @@ const routes = [
     component: NewMatch,
     name: 'newMatch',
     path: '/new-match',
+    props: true,
+  },
+  {
+    component: Match,
+    name: 'match',
+    path: '/match/:matchId',
     props: true,
   },
 ];

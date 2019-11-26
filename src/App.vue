@@ -10,10 +10,6 @@
       <router-link to="/new-match">
         <v-btn large color="success">New Match</v-btn>
       </router-link>
-
-      <!-- <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>-->
     </v-app-bar>
 
     <v-content>

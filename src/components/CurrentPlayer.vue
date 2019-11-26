@@ -13,6 +13,7 @@
           color='success'
           filter
           @click="$emit('player-selected', player)"
+          :disabled='opposingPlayer && opposingPlayer._id === player._id'
         >{{player.name}}</v-chip>
       </span>
     </v-card-text>
@@ -23,6 +24,7 @@
 export default {
   name: 'CurrentPlayer',
   props: {
+    opposingPlayer: Object,
     players: Array,
     playerNumber: Number,
     selectedPlayer: Object,
