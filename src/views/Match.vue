@@ -14,9 +14,12 @@
           <v-card-title class="justify-center">Match Score</v-card-title>
           <v-card-subtitle v-if="match">Best of {{match.best_of}}</v-card-subtitle>
           <v-divider></v-divider>
-          <v-card-text
-            class="match-score text-center"
-          >{{player1_games_won}} - {{player2_games_won}}</v-card-text>
+          <v-card-text class="match-score text-center">{{player1_games_won}} - {{player2_games_won}}</v-card-text>
+          <v-divider></v-divider>
+          <v-card-title class='justify-center'>Games</v-card-title>
+          <v-card-text v-if="games.length" class='game-score text-center'>
+            <p v-for="(game, index) in games" v-bind:key="index">{{game.player1}} - {{game.player2}}</p>
+          </v-card-text>
         </v-card>
         <div>
           <v-btn
@@ -25,6 +28,13 @@
             @click="submitGame()"
           >Submit Game {{match ? match.games.length + 1 : 1}}</v-btn>
         </div>
+        <!-- <div>
+          <v-btn
+            large
+            class="success submit-match"
+            @click="submitMatch()"
+          >Submit Match</v-btn>
+        </div> -->
       </v-col>
 
       <v-col cols="12" lg="4">
@@ -51,10 +61,16 @@ export default {
   },
   data() {
     return {
-      player1: undefined,
-      player2: undefined,
+      games: [
+        {
+          player1: 20,
+          player2: 22,
+        },
+      ],
       match: undefined,
       matchId: this.$route.params.matchId,
+      player1: undefined,
+      player2: undefined,
       player1_games_won: 0,
       player2_games_won: 0,
       player1_score: 12,
@@ -75,7 +91,16 @@ export default {
   methods: {
     async submitGame() {
       try {
-        const res = await GameService.submitGame(this.matchId, this.player1_score, this.player2_score);
+        const res = await GameService.submitGame(
+          this.matchId,
+          this.player1_score,
+          this.player2_score
+        );
+
+        this.games.push({
+          player1: this.player1_score,
+          player2: this.player2_score,
+        });
         this.player1_games_won = res.player1_games_won;
         this.player2_games_won = res.player2_games_won;
         this.player1_score = 0;
@@ -88,13 +113,21 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .submit-game {
-  margin: 5vh 0;
+  margin: 2vh 0 2vh 0;
 }
 .match-score {
   font-family: 'Kelly Slab', cursive;
   line-height: 75%;
   font-size: 5vw;
+}
+.game-score {
+  font-family: 'Kelly Slab', cursive;
+  line-height: 110%;
+  font-size: 1.5vw;
+  p {
+    margin: 0;
+  }
 }
 </style>

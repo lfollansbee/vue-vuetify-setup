@@ -142,7 +142,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .register {
   margin: 5vh;
 }
