@@ -16,6 +16,8 @@ module.exports = {
     'no-underscore-dangle': 'off',
     'max-len': 'off',
     camelCase: 'off',
+    'no-plusplus': 'off',
+    'no-unused-expressions': 'warn',
   },
   parserOptions: {
     parser: 'babel-eslint',

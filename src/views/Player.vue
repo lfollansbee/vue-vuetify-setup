@@ -11,11 +11,15 @@
         <Activity v-bind:playerActivity="this.activity" v-bind:playerId="this.playerId" />
       </v-col>
     </v-row>
+    <v-row no-gutters>
+      <PlayerTrend v-bind:playerActivity="this.activity"/>
+    </v-row>
   </v-container>
 </template>
 
 <script>
 import PlayerStats from '@/components/PlayerStats.vue';
+import PlayerTrend from '@/components/PlayerTrend.vue';
 import Activity from '@/components/Activity.vue';
 import PingPongApi from '../services/PingPongApi';
 import PlayerService from '../services/PlayerService';
@@ -25,6 +29,7 @@ export default {
   components: {
     Activity,
     PlayerStats,
+    PlayerTrend,
   },
   data() {
     return {
