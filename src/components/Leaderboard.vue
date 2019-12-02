@@ -17,7 +17,7 @@
               </router-link>
             </td>
             <td align="center">{{player.matches_won}}</td>
-            <td align="center">{{player.matches.length - player.matches_won}}</td>
+            <td align="center">{{Math.max(0, player.matches.length - player.matches_won)}}</td>
             <td>{{player.last_played | moment("from", "now")}}</td>
           </tr>
         </tbody>

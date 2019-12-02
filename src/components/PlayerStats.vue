@@ -23,7 +23,7 @@ export default {
   computed: {
     matches_lost() {
       if (this.player && this.player.matches) {
-        return this.player.matches.length - this.player.matches_won;
+        return Math.max(0, this.player.matches.length - this.player.matches_won); // if matches lost < 0, returns 0
       }
       return null;
     },
