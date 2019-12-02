@@ -13,4 +13,9 @@ export default {
     const response = await axios.get(`/match/${id}`);
     return response.data.match;
   },
+
+  async endMatch(id) {
+    const response = await axios.patch(`/match/${id}`);
+    return response.data;
+  },
 };
