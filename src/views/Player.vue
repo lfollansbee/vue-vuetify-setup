@@ -12,7 +12,7 @@
       </v-col>
     </v-row>
     <v-row no-gutters>
-      <PlayerTrend v-bind:playerActivity="this.activity"/>
+      <PlayerTrend v-bind:player="this.player" v-bind:playerActivity="this.activity"/>
     </v-row>
   </v-container>
 </template>

@@ -1,9 +1,9 @@
 <template>
   <v-card outlined width="100%">
-    <v-card-title class="justify-center">Win:Loss Ratio Trend</v-card-title>
+    <v-card-title class="justify-center">Win/Loss Trend</v-card-title>
     <v-divider></v-divider>
     <v-sparkline
-      :value="myValues ? myValues : []"
+      :value="streak ? [0, ...streak] : []"
       :gradient="gradient"
       :smooth="radius || false"
       :padding="padding"
@@ -16,33 +16,39 @@
 </template>
 
 <script>
-const gradients = [
-  ['#222'],
-  ['#42b3f4'],
-  ['red', 'orange', 'yellow'],
-  ['#4CAF50', '#FFC107', '#FF5252'],
-  ['#00c6ff', '#F0F', '#FF0'],
-  ['#f72047', '#ffd200', '#1feaea'],
-];
-
 export default {
   name: 'PlayerTrend',
-  props: { playerActivity: Array },
+  props: {
+    player: Object,
+    playerActivity: Array,
+  },
   data: () => ({
     radius: 10,
     padding: 8,
-    gradient: gradients[3],
-    gradients,
+    gradient: ['#4CAF50', '#FFC107', '#FF5252'],
   }),
   computed: {
-    myValues() {
+    rates() {
       const games = this.playerActivity.map(game => game.won).reverse();
-
       let victories = 0;
-      let losses = 0;
-      return games.map((game) => {
-        game ? victories++ : losses++;
-        return victories / losses;
+      return games.map((game, index) => {
+        if (game) {
+          victories++;
+        }
+        return victories / (index + 1);
+      });
+    },
+    streak() {
+      const games = this.playerActivity.map(game => game.won).reverse();
+      let rate = 0;
+
+      return games.map((game, index) => {
+        if (game) {
+          rate++;
+        } else {
+          rate--;
+        }
+        return rate;
       });
     },
   },
