@@ -5,7 +5,7 @@
     light
   >
     <template v-slot:activator="{ on }">
-      <v-btn large :disabled="disableButton" class="success submit-match" v-on="on">{{buttonText}}</v-btn>
+      <v-btn large :disabled="disableButton" :class="buttonClasses" v-on="on">{{buttonText}}</v-btn>
     </template>
 
     <v-card>
@@ -14,7 +14,7 @@
       <v-card-actions>
         <v-btn color="error" @click="dialog = false">Cancel</v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="warning" @click="denyCallback">No</v-btn>
+        <v-btn v-if="enableDeny" color="warning" @click="denyCallback">No</v-btn>
         <v-btn color="primary" @click="confirmCallback">Yes</v-btn>
       </v-card-actions>
     </v-card>
@@ -25,8 +25,10 @@
 export default {
   name: 'DialogBox',
   props: {
+    buttonClasses: Array,
     buttonText: String,
     dialog: Boolean,
+    enableDeny: Boolean,
     dialogText: String,
     disableButton: Boolean,
     denyCallback: Function,

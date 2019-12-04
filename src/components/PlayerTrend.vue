@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined width="100%">
+  <v-card v-if="streak.length" outlined width="100%">
     <v-card-title class="justify-center">Win/Loss Trend</v-card-title>
     <v-divider></v-divider>
     <v-sparkline
@@ -28,16 +28,6 @@ export default {
     gradient: ['#4CAF50', '#FFC107', '#FF5252'],
   }),
   computed: {
-    rates() {
-      const games = this.playerActivity.map(game => game.won).reverse();
-      let victories = 0;
-      return games.map((game, index) => {
-        if (game) {
-          victories++;
-        }
-        return victories / (index + 1);
-      });
-    },
     streak() {
       const games = this.playerActivity.map(game => game.won).reverse();
       let rate = 0;

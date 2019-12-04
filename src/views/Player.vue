@@ -1,7 +1,9 @@
 <template>
   <v-container class="player">
     <v-row align="start" justify="center">
-      <h2>{{player.name}}</h2>
+      <h2 v-bind:class="{ 'warning--text': !player.active }">
+        {{player.name}}<span v-if="!player.active" class="warning--text"> (INACTIVE)</span>
+      </h2>
     </v-row>
     <v-row align="start" justify="center">
       <v-col cols="12" sm="6">

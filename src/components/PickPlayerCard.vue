@@ -10,10 +10,11 @@
       <span v-for="(player, index) in players" v-bind:key="index">
         <v-chip
           :input-value="selectedPlayer && selectedPlayer._id === player._id"
-          color='success'
+          class='success'
+          v-bind:class="{ warning: !player.active }"
           filter
           @click="$emit('player-selected', player)"
-          :disabled='opposingPlayer && opposingPlayer._id === player._id'
+          :disabled='(opposingPlayer && opposingPlayer._id === player._id) || !player.active'
         >{{player.name}}</v-chip>
       </span>
     </v-card-text>
@@ -35,6 +36,7 @@ export default {
 <style lang='scss'>
 .v-chip {
   margin: 8px;
+  font-weight: bold;
 }
 .v-card__title {
   height: 64px;

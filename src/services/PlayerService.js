@@ -18,4 +18,9 @@ export default {
     });
     return response.data.player;
   },
+
+  async deactivatePlayer(id) {
+    const playerResponse = await axios.patch(`/player/${id}`);
+    return playerResponse.data;
+  },
 };

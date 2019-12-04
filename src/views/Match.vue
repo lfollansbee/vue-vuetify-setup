@@ -37,6 +37,8 @@
             v-if="this.player1_score !== 0 || this.player2_score !== 0"
             buttonText="Submit Match"
             dialogText="Do you want to submit the current game as part of this match?"
+            v-bind:buttonClasses="['success']"
+            v-bind:enableDeny="true"
             v-bind:disableButton="matchCompleted"
             v-bind:denyCallback="() => submitMatch(false)"
             v-bind:confirmCallback="() => submitMatch(true)"
@@ -44,7 +46,7 @@
           />
 
           <v-btn
-            v-if="this.player1_score === 0 && this.player2_score === 0"
+            v-else
             large
             :disabled="matchCompleted"
             class="success submit-match"
