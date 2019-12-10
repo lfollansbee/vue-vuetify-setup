@@ -30,7 +30,7 @@
           <v-card outlined v-if="toggleForm">
             <v-card-text v-if="this.toggleForm">
               <v-form
-                v-on:submit.prevent="onSubmit"
+                v-on:submit.prevent="submitName"
                 ref='form'
                 v-model="valid"
                 lazy-validation>
