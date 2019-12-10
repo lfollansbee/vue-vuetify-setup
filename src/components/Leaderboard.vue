@@ -14,7 +14,10 @@
             <td>
               <router-link :to="{ name: 'player', params: {playerId: player._id}}">
                 {{player.name}}
-                <span v-bind:class="{ 'warning--text': !player.active }" v-if="!player.active"> (INACTIVE)</span>
+                <span
+                  v-bind:class="{ 'warning--text': !player.active }"
+                  v-if="!player.active"
+                >(INACTIVE)</span>
               </router-link>
             </td>
             <td align="center">{{player.matches_won}}</td>
@@ -83,7 +86,7 @@ img {
 }
 table > tbody > tr {
   td:nth-child(1) {
-    color: #82B1ff;
+    color: #82b1ff;
   }
   td:nth-child(2) {
     color: #8bc34a;

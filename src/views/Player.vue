@@ -2,7 +2,8 @@
   <v-container class="player">
     <v-row align="start" justify="center">
       <h2 v-bind:class="{ 'warning--text': !player.active }">
-        {{player.name}}<span v-if="!player.active" class="warning--text"> (INACTIVE)</span>
+        {{player.name}}
+        <span v-if="!player.active" class="warning--text">(INACTIVE)</span>
       </h2>
     </v-row>
     <v-row align="start" justify="center">
@@ -14,7 +15,7 @@
       </v-col>
     </v-row>
     <v-row no-gutters>
-      <PlayerTrend v-bind:player="this.player" v-bind:playerActivity="this.activity"/>
+      <PlayerTrend v-bind:player="this.player" v-bind:playerActivity="this.activity" />
     </v-row>
   </v-container>
 </template>
@@ -23,7 +24,7 @@
 import PlayerStats from '@/components/PlayerStats.vue';
 import PlayerTrend from '@/components/PlayerTrend.vue';
 import Activity from '@/components/Activity.vue';
-import PingPongApi from '../services/PingPongApi';
+import ActivityService from '../services/ActivityService';
 import PlayerService from '../services/PlayerService';
 
 export default {
@@ -47,10 +48,7 @@ export default {
       const response = await PlayerService.fetchPlayer(this.playerId);
       this.player = response;
 
-      const activity = await PingPongApi.fetchActivity(
-        this.playerId,
-        this.player.name
-      );
+      const activity = await ActivityService.fetchActivity(this.playerId);
       this.activity = activity;
       this.loading = false;
     } catch (err) {

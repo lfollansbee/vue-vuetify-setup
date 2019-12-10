@@ -29,7 +29,7 @@ export default {
   }),
   computed: {
     streak() {
-      const games = this.playerActivity.map(game => game.won).reverse();
+      const games = this.playerActivity.map(game => this.player._id === game.winner_id).reverse();
       let rate = 0;
 
       return games.map((game, index) => {

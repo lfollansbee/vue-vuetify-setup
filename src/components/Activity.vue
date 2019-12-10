@@ -3,46 +3,59 @@
     <v-card-title class="justify-center">Activity</v-card-title>
     <v-divider></v-divider>
 
-    <div v-if="this.playerActivity !== undefined">
-      <div v-for="(item, index) in playerActivity" v-bind:key="index">
-        <p
-          v-if="item.won"
-          class="success--text"
-        >{{item.result}} ({{item.date | moment("from", "now")}})</p>
-        <p v-else>{{item.result}} ({{item.date | moment("from", "now")}})</p>
-      </div>
-    </div>
-
-    <div v-else>
-      <div v-for="(item, index) in activity" v-bind:key="index">
-        <p>{{item.result}} ({{item.date | moment("from", "now")}})</p>
-      </div>
-    </div>
-
+    <v-expansion-panels :accordion="true" multiple focusable>
+      <v-expansion-panel v-for="(match, index) in activity" v-bind:key="index">
+        <v-expansion-panel-header
+          v-bind:class="{ 'success--text': match.winner_id === playerId }"
+        >{{match.result}} ({{match.date | moment("from", "now")}})</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-row>
+            <v-col
+              v-for="(game, index) in match.game_scores"
+              v-bind:key="index"
+              cols="12"
+              sm="6"
+              md="4"
+              lg="4"
+            >
+              <v-card>
+                <v-card-subtitle>Game {{index + 1}}</v-card-subtitle>
+                <v-card-text>{{game.match_winner}}-{{game.match_loser}}</v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
   </v-card>
 </template>
 
 <script>
-import pingPongApi from '../services/PingPongApi';
+import activityService from '../services/ActivityService';
 
 export default {
-  name: 'Player',
+  name: 'Activity',
   props: {
     playerActivity: Array,
     playerId: String,
   },
   data() {
     return {
+      allActivity: [],
       loading: false,
-      activity: [],
     };
+  },
+  computed: {
+    activity() {
+      return this.playerActivity ? this.playerActivity : this.allActivity;
+    },
   },
   mounted() {
     this.loading = true;
     if (!this.playerActivity && !this.playerId) {
-      pingPongApi.fetchActivity().then(
+      activityService.fetchActivity().then(
         (response) => {
-          this.activity = response;
+          this.allActivity = response;
           this.loading = false;
         },
         (error) => {
