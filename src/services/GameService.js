@@ -8,4 +8,9 @@ export default {
     });
     return res.data.data;
   },
+
+  async fetchGamesByMatch(matchId) {
+    const res = await axios.get(`/games/${matchId}`);
+    return res.data;
+  },
 };

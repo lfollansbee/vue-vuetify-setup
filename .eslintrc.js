@@ -18,6 +18,7 @@ module.exports = {
     camelCase: 'off',
     'no-plusplus': 'off',
     'no-unused-expressions': 'warn',
+    'prefer-destructuring': ['error', { object: true, array: false }],
   },
   parserOptions: {
     parser: 'babel-eslint',

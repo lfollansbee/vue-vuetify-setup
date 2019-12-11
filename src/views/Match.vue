@@ -19,7 +19,7 @@
 
           <v-card-title v-if="games.length" class="justify-center">Games</v-card-title>
           <v-card-text v-if="games.length" class="game-score text-center">
-            <p v-for="(game, index) in games" v-bind:key="index">{{game.player1}} - {{game.player2}}</p>
+            <p v-for="(game, index) in games" v-bind:key="index">{{game.player1_score}} - {{game.player2_score}}</p>
           </v-card-text>
         </v-card>
         <div>
@@ -61,7 +61,7 @@
             <v-divider></v-divider>
             <v-card-actions class="justify-center">
               <router-link to="/">
-                <v-btn large color="success" >View Leaderboard</v-btn>
+                <v-btn large color="success">View Leaderboard</v-btn>
               </router-link>
             </v-card-actions>
           </v-card>
@@ -111,14 +111,24 @@ export default {
   },
   async mounted() {
     try {
-      const res = await MatchService.fetchMatch(this.matchId);
-      this.match = res;
+      Promise.all([
+        MatchService.fetchMatch(this.matchId),
+        GameService.fetchGamesByMatch(this.matchId),
+      ]).then((responses) => {
+        this.match = responses[0];
+        this.player1_games_won = this.match.player1_games_won;
+        this.player2_games_won = this.match.player2_games_won;
 
-      this.player1_games_won = this.match.player1_games_won;
-      this.player2_games_won = this.match.player2_games_won;
+        this.games = responses[1].games;
 
-      this.player1 = await PlayerService.fetchPlayer(res.player1_id);
-      this.player2 = await PlayerService.fetchPlayer(res.player2_id);
+        Promise.all([
+          PlayerService.fetchPlayer(responses[0].player1_id),
+          PlayerService.fetchPlayer(responses[0].player2_id),
+        ]).then((players) => {
+          this.player1 = players[0];
+          this.player2 = players[1];
+        });
+      });
     } catch (err) {
       console.error(err);
     }
@@ -133,8 +143,9 @@ export default {
         );
 
         this.games.push({
-          player1: this.player1_score,
-          player2: this.player2_score,
+          player1_score: res.game.player1_score,
+          player2_score: res.game.player2_score,
+          game_id: res.game._id,
         });
         this.player1_games_won = res.player1_games_won;
         this.player2_games_won = res.player2_games_won;

@@ -7,7 +7,13 @@
       <img src="../assets/ping-pong.gif" />
     </div>
 
-    <v-data-table :headers="headers" :items="players" :items-per-page="25" :fixed-header="true">
+    <v-data-table
+      :headers="headers"
+      :items="players"
+      :items-per-page="25"
+      :fixed-header="true"
+      hide-default-footer
+    >
       <template v-slot:body="{ items }">
         <tbody>
           <tr v-for="player in items" :key="player._id">
