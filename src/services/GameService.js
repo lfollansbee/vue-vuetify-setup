@@ -13,4 +13,9 @@ export default {
     const res = await axios.get(`/games/${matchId}`);
     return res.data;
   },
+
+  async editGame(body, gameId) {
+    const res = await axios.patch(`/game/${gameId}`, body);
+    return res.data;
+  },
 };

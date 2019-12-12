@@ -32,7 +32,7 @@ export default {
       const games = this.playerActivity.map(game => this.player._id === game.winner_id).reverse();
       let rate = 0;
 
-      return games.map((game, index) => {
+      return games.map((game) => {
         if (game) {
           rate++;
         } else {

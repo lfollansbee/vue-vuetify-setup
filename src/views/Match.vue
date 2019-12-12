@@ -18,8 +18,59 @@
           <v-divider></v-divider>
 
           <v-card-title v-if="games.length" class="justify-center">Games</v-card-title>
-          <v-card-text v-if="games.length" class="game-score text-center">
-            <p v-for="(game, index) in games" v-bind:key="index">{{game.player1_score}} - {{game.player2_score}}</p>
+          <v-card-text v-if="games.length" class="text-center">
+            <div v-if="!editingGames">
+              <p
+                v-for="(game, index) in games"
+                v-bind:key="index"
+                class="game-score"
+              >{{game.player1_score}} - {{game.player2_score}}</p>
+
+              <v-btn class="mx-2" fab small color="accent" @click="editingGames=true">
+                <v-icon dark>mdi-pencil</v-icon>
+              </v-btn>
+            </div>
+
+            <div v-else class="editGames">
+              <v-row v-for="game in games" v-bind:key="game._id" justify="center">
+                <v-text-field
+                  v-model="formFields[game._id].player1_score"
+                  single-line
+                  outlined
+                  dense
+                  hide-details
+                ></v-text-field>
+
+                <span>-</span>
+
+                <v-text-field
+                  v-model="formFields[game._id].player2_score"
+                  single-line
+                  outlined
+                  dense
+                  hide-details
+                ></v-text-field>
+              </v-row>
+              <p v-if="errors.updateGameErr" class="error--text">{{errors.updateGameErr}}</p>
+
+              <v-tooltip left>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" class="mx-2" fab small @click="editingGames=false">
+                    <v-icon dark>mdi-cancel</v-icon>
+                  </v-btn>
+                </template>
+                <span>Cancel</span>
+              </v-tooltip>
+
+              <v-tooltip right>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" class="mx-2" fab small color="error" @click="updateGame()">
+                    <v-icon dark>mdi-content-save</v-icon>
+                  </v-btn>
+                </template>
+                <span>Save</span>
+              </v-tooltip>
+            </div>
           </v-card-text>
         </v-card>
         <div>
@@ -94,22 +145,29 @@ export default {
   },
   data() {
     return {
+      errors: {
+        updateGameErr: '',
+      },
+      formFields: {},
       games: [],
+      editingGames: false,
+      loading: false,
       match: undefined,
       matchCompleted: false,
       matchId: this.$route.params.matchId,
       matchMessage: undefined,
       player1: undefined,
       player2: undefined,
-      player1_games_won: 0,
       player1_score: 21,
       player2_score: 15,
+      player1_games_won: 0,
       player2_games_won: 0,
       matchSubmittedDialog: false,
       submitMatchDialog: false,
     };
   },
   async mounted() {
+    this.loading = true;
     try {
       Promise.all([
         MatchService.fetchMatch(this.matchId),
@@ -119,7 +177,7 @@ export default {
         this.player1_games_won = this.match.player1_games_won;
         this.player2_games_won = this.match.player2_games_won;
 
-        this.games = responses[1].games;
+        this.setFormFields(responses[1]);
 
         Promise.all([
           PlayerService.fetchPlayer(responses[0].player1_id),
@@ -127,13 +185,63 @@ export default {
         ]).then((players) => {
           this.player1 = players[0];
           this.player2 = players[1];
+
+          this.loading = false;
         });
       });
     } catch (err) {
+      this.loading = false;
       console.error(err);
     }
   },
   methods: {
+    setFormFields(response) {
+      this.games = response.games;
+
+      for (let i = 0; i < this.games.length; i++) {
+        const game = this.games[i];
+
+        this.formFields[game._id] = {
+          player1_score: undefined,
+          player2_score: undefined,
+        };
+        this.formFields[game._id].player1_score = game.player1_score;
+        this.formFields[game._id].player2_score = game.player2_score;
+      }
+    },
+    async updateGame() {
+      let updateGamePromises = [];
+      const formFieldIds = Object.keys(this.formFields);
+
+      updateGamePromises = formFieldIds
+        .filter(id => this.formFields[id].player1_score !== this.player1_score
+          || this.formFields[id].player2_score !== this.player2_score)
+        .map((changedGameId) => {
+          const body = {
+            player1_id: this.player1._id,
+            player2_id: this.player2._id,
+            player1_score: Number(this.formFields[changedGameId].player1_score),
+            player2_score: Number(this.formFields[changedGameId].player2_score),
+          };
+          return GameService.editGame(body, changedGameId);
+        });
+
+      try {
+        Promise.all(updateGamePromises).then((responses) => {
+          responses.forEach((res) => {
+            this.player1_games_won = res.player1_games_won;
+            this.player2_games_won = res.player2_games_won;
+          });
+          GameService.fetchGamesByMatch(this.matchId).then((allGames) => {
+            this.setFormFields(allGames);
+            this.editingGames = false;
+          });
+        });
+      } catch (err) {
+        console.error(err);
+        this.errors.updateGameErr = 'Encountered an error when updating game scores.';
+      }
+    },
     async submitGame() {
       try {
         const res = await GameService.submitGame(
@@ -193,6 +301,25 @@ export default {
   font-size: 1.5vw;
   p {
     margin: 0;
+  }
+}
+.editGames {
+  .row {
+    font-family: 'Kelly Slab', cursive;
+    line-height: 110%;
+    font-size: 1.5vw;
+    > span {
+      margin: 8px;
+    }
+    .v-input {
+      max-width: 20%;
+      input {
+        text-align: center;
+      }
+    }
+  }
+  .error--text {
+    font-size: medium;
   }
 }
 </style>
