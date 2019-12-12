@@ -20,6 +20,7 @@
         v-bind:confirmCallback="() => deactivatePlayer()"
         v-bind:enableDeny="false"
         v-model="deactivateDialog"
+        v-bind:errorText="errors.deactivateErr"
       />
     </v-card-actions>
   </v-card>
@@ -38,7 +39,15 @@ export default {
   data() {
     return {
       deactivateDialog: false,
+      errors: {
+        deactivateErr: '',
+      },
     };
+  },
+  watch: {
+    deactivateDialog() {
+      this.errors.deactivateErr = '';
+    },
   },
   computed: {
     matches_lost() {
@@ -50,12 +59,13 @@ export default {
     },
   },
   methods: {
-    async deactivatePlayer() {
-      this.deactivateDialog = false;
+    deactivatePlayer() {
       try {
-        await PlayerService.deactivatePlayer(this.player._id);
+        PlayerService.deactivatePlayer(this.player._id);
+        this.deactivateDialog = false;
       } catch (err) {
         console.error(err);
+        this.errors.deactivateErr = err;
       }
     },
   },

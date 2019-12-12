@@ -74,6 +74,7 @@
           </v-card-text>
         </v-card>
         <div>
+          <p v-if="errors.submitGameErr" class="error--text">{{errors.submitGameErr}}</p>
           <v-btn
             large
             :disabled="matchCompleted || (player1_score === 0 && player2_score === 0)"
@@ -150,6 +151,7 @@ export default {
   data() {
     return {
       errors: {
+        submitGameErr: '',
         submitMatchErr: '',
         updateGameErr: '',
       },
@@ -171,7 +173,12 @@ export default {
       submitMatchDialog: false,
     };
   },
-  async mounted() {
+  watch: {
+    submitMatchDialog() {
+      this.errors.submitMatchErr = '';
+    },
+  },
+  mounted() {
     this.loading = true;
     try {
       Promise.all([
@@ -179,9 +186,11 @@ export default {
         GameService.fetchGamesByMatch(this.matchId),
       ]).then(responses => {
         this.match = responses[0];
-        this.player1_games_won = this.match.player1_games_won;
-        this.player2_games_won = this.match.player2_games_won;
 
+        this.setGamesWon(
+          this.match.player1_games_won,
+          this.match.player2_games_won
+        );
         this.setFormFields(responses[1]);
 
         Promise.all([
@@ -213,13 +222,20 @@ export default {
         this.formFields[game._id].player2_score = game.player2_score;
       }
     },
-    async updateGame() {
+    setGamesWon(player1, player2) {
+      this.player1_games_won = player1;
+      this.player2_games_won = player2;
+    },
+    updateGame() {
       let updateGamePromises = [];
       const formFieldIds = Object.keys(this.formFields);
 
       updateGamePromises = formFieldIds
-        .filter(id => this.formFields[id].player1_score !== this.player1_score
-          || this.formFields[id].player2_score !== this.player2_score).map(changedGameId => {
+        .filter(
+          id => this.formFields[id].player1_score !== this.player1_score
+            || this.formFields[id].player2_score !== this.player2_score
+        )
+        .map(changedGameId => {
           const body = {
             player1_id: this.player1._id,
             player2_id: this.player2._id,
@@ -232,8 +248,7 @@ export default {
       try {
         Promise.all(updateGamePromises).then(responses => {
           responses.forEach(res => {
-            this.player1_games_won = res.player1_games_won;
-            this.player2_games_won = res.player2_games_won;
+            this.setGamesWon(res.player1_games_won, res.player2_games_won);
           });
           GameService.fetchGamesByMatch(this.matchId).then(allGames => {
             this.setFormFields(allGames);
@@ -260,13 +275,12 @@ export default {
         });
 
         this.setFormFields();
+        this.setGamesWon(res.player1_games_won, res.player2_games_won);
 
-        this.player1_games_won = res.player1_games_won;
-        this.player2_games_won = res.player2_games_won;
         this.player1_score = 0;
         this.player2_score = 0;
       } catch (err) {
-        console.error(err);
+        this.errors.submitGameErr = err;
       }
     },
     async submitMatch(submitGame = false) {
@@ -278,8 +292,10 @@ export default {
         const res = await MatchService.endMatch(this.matchId);
         this.submitMatchDialog = false;
 
-        this.player1_games_won = res.match.player1_games_won;
-        this.player2_games_won = res.match.player2_games_won;
+        this.setGamesWon(
+          res.match.player1_games_won,
+          res.match.player2_games_won
+        );
 
         this.matchCompleted = true;
         this.matchMessage = res.match.activity;

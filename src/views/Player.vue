@@ -42,17 +42,19 @@ export default {
       playerId: this.$route.params.playerId,
     };
   },
-  async mounted() {
+  mounted() {
     this.loading = true;
     try {
-      const response = await PlayerService.fetchPlayer(this.playerId);
-      this.player = response;
-
-      const activity = await ActivityService.fetchActivity(this.playerId);
-      this.activity = activity;
-      this.loading = false;
+      Promise.all([
+        PlayerService.fetchPlayer(this.playerId),
+        ActivityService.fetchActivity(this.playerId),
+      ]).then(([playerRes, activityRes]) => {
+        this.player = playerRes;
+        this.activity = activityRes;
+      });
     } catch (err) {
       console.error(err);
+    } finally {
       this.loading = false;
     }
   },

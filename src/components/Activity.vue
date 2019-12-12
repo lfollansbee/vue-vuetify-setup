@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import activityService from '../services/ActivityService';
+import ActivityService from '../services/ActivityService';
 
 export default {
   name: 'Activity',
@@ -53,7 +53,7 @@ export default {
   mounted() {
     this.loading = true;
     if (!this.playerActivity && !this.playerId) {
-      activityService.fetchActivity().then(
+      ActivityService.fetchActivity().then(
         response => {
           this.allActivity = response;
           this.loading = false;
