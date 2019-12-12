@@ -54,11 +54,11 @@ export default {
     this.loading = true;
     if (!this.playerActivity && !this.playerId) {
       activityService.fetchActivity().then(
-        (response) => {
+        response => {
           this.allActivity = response;
           this.loading = false;
         },
-        (error) => {
+        error => {
           console.error(error);
           this.loading = false;
         }

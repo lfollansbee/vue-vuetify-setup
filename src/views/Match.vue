@@ -83,18 +83,22 @@
         </div>
 
         <div>
-          <!-- If there is a current game that has not been submitted, show dialog box, else just submit match -->
           <DialogBox
-            v-if="this.player1_score !== 0 || this.player2_score !== 0"
-            buttonText="Submit Match"
             dialogText="Do you want to submit the current game as part of this match?"
-            v-bind:buttonClasses="['success']"
-            v-bind:enableDeny="true"
-            v-bind:disableButton="matchCompleted"
-            v-bind:denyCallback="() => submitMatch(false)"
             v-bind:confirmCallback="() => submitMatch(true)"
-            v-bind:dialog="submitMatchDialog"
+            v-bind:denyCallback="() => submitMatch(false)"
+            v-bind:enableDeny="true"
+            v-bind:errorText="errors.submitMatchErr"
+            v-model="submitMatchDialog"
           />
+          <!-- If there is a current game that has not been submitted, show dialog box, else just submit match -->
+          <v-btn
+            v-if="player1_score !== 0 || player2_score !== 0"
+            large
+            :disabled="matchCompleted"
+            class="success"
+            @click="submitMatchDialog = true"
+          >Submit Match</v-btn>
 
           <v-btn
             v-else
@@ -146,6 +150,7 @@ export default {
   data() {
     return {
       errors: {
+        submitMatchErr: '',
         updateGameErr: '',
       },
       formFields: {},
@@ -172,7 +177,7 @@ export default {
       Promise.all([
         MatchService.fetchMatch(this.matchId),
         GameService.fetchGamesByMatch(this.matchId),
-      ]).then((responses) => {
+      ]).then(responses => {
         this.match = responses[0];
         this.player1_games_won = this.match.player1_games_won;
         this.player2_games_won = this.match.player2_games_won;
@@ -182,21 +187,20 @@ export default {
         Promise.all([
           PlayerService.fetchPlayer(responses[0].player1_id),
           PlayerService.fetchPlayer(responses[0].player2_id),
-        ]).then((players) => {
+        ]).then(players => {
           this.player1 = players[0];
           this.player2 = players[1];
-
-          this.loading = false;
         });
       });
     } catch (err) {
-      this.loading = false;
       console.error(err);
+    } finally {
+      this.loading = false;
     }
   },
   methods: {
     setFormFields(response) {
-      this.games = response.games;
+      if (response) this.games = response.games;
 
       for (let i = 0; i < this.games.length; i++) {
         const game = this.games[i];
@@ -215,8 +219,7 @@ export default {
 
       updateGamePromises = formFieldIds
         .filter(id => this.formFields[id].player1_score !== this.player1_score
-          || this.formFields[id].player2_score !== this.player2_score)
-        .map((changedGameId) => {
+          || this.formFields[id].player2_score !== this.player2_score).map(changedGameId => {
           const body = {
             player1_id: this.player1._id,
             player2_id: this.player2._id,
@@ -227,12 +230,12 @@ export default {
         });
 
       try {
-        Promise.all(updateGamePromises).then((responses) => {
-          responses.forEach((res) => {
+        Promise.all(updateGamePromises).then(responses => {
+          responses.forEach(res => {
             this.player1_games_won = res.player1_games_won;
             this.player2_games_won = res.player2_games_won;
           });
-          GameService.fetchGamesByMatch(this.matchId).then((allGames) => {
+          GameService.fetchGamesByMatch(this.matchId).then(allGames => {
             this.setFormFields(allGames);
             this.editingGames = false;
           });
@@ -253,8 +256,11 @@ export default {
         this.games.push({
           player1_score: res.game.player1_score,
           player2_score: res.game.player2_score,
-          game_id: res.game._id,
+          _id: res.game._id,
         });
+
+        this.setFormFields();
+
         this.player1_games_won = res.player1_games_won;
         this.player2_games_won = res.player2_games_won;
         this.player1_score = 0;
@@ -264,13 +270,13 @@ export default {
       }
     },
     async submitMatch(submitGame = false) {
-      this.submitMatchDialog = false;
       // if game hasn't been submitted, then submit game first
       if (submitGame) {
         await this.submitGame();
       }
       try {
         const res = await MatchService.endMatch(this.matchId);
+        this.submitMatchDialog = false;
 
         this.player1_games_won = res.match.player1_games_won;
         this.player2_games_won = res.match.player2_games_won;
@@ -279,7 +285,12 @@ export default {
         this.matchMessage = res.match.activity;
         this.matchSubmittedDialog = true;
       } catch (err) {
-        console.error(err);
+        this.submitMatchDialog = true;
+        if (err.response.status === 405) {
+          this.errors.submitMatchErr = err.response.data.message;
+        } else {
+          this.errors.submitMatchErr = 'Error submitting match';
+        }
       }
     },
   },

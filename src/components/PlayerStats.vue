@@ -14,33 +14,27 @@
       </v-col>
     </v-row>
     <v-card-actions class="justify-center">
-
-      <v-dialog v-model="deactivateDialog" width="50%" light>
-        <template v-slot:activator="{ on }">
-          <v-btn large class="warning" v-on="on">Deactivate Player</v-btn>
-        </template>
-
-        <v-card>
-          <v-card-title>Are you sure you want to deactivate this player? Once inactive, a player's status cannot change.</v-card-title>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-btn color="error" @click="deactivateDialog = false">Cancel</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="deactivatePlayer()">Yes</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
+      <v-btn large class="warning" @click="deactivateDialog = true">Deactivate Player</v-btn>
+      <DialogBox
+        dialogText="Are you sure you want to deactivate this player? Once inactive, a player's status cannot change."
+        v-bind:confirmCallback="() => deactivatePlayer()"
+        v-bind:enableDeny="false"
+        v-model="deactivateDialog"
+      />
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import PlayerService from '../services/PlayerService';
+import DialogBox from '@/components/DialogBox.vue';
 
 export default {
   name: 'PlayerStats',
   props: { player: Object },
+  components: {
+    DialogBox,
+  },
   data() {
     return {
       deactivateDialog: false,

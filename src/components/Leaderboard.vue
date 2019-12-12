@@ -72,11 +72,11 @@ export default {
   mounted() {
     this.loading = true;
     PlayerService.fetchAllPlayers().then(
-      (response) => {
+      response => {
         this.loading = false;
         this.players = response;
       },
-      (error) => {
+      error => {
         console.error(error);
         this.loading = false;
       }

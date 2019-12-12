@@ -19,6 +19,7 @@ module.exports = {
     'no-plusplus': 'off',
     'no-unused-expressions': 'warn',
     'prefer-destructuring': ['error', { object: true, array: false }],
+    'arrow-parens': ['error', 'as-needed'],
   },
   parserOptions: {
     parser: 'babel-eslint',
