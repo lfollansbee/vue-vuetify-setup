@@ -5,6 +5,11 @@
     <v-divider></v-divider>
     <v-spacer></v-spacer>
     <v-card-text class="score text-center">{{score}}</v-card-text>
+    <v-card-actions>
+      <v-btn med fab class="error" :disabled="score <= 0" @click="$emit('decrement-score')">-1</v-btn>
+      <v-spacer></v-spacer>
+      <v-btn med fab class="success" @click="$emit('increment-score')">+1</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -21,8 +26,6 @@ export default {
 
 <style lang='scss'>
 .score {
-  // font-family: 'Do Hyeon', sans-serif;
-  // font-family: 'Press Start 2P', cursive;
   font-family: 'Kelly Slab', cursive;
   line-height: 120%;
   font-size: 15vw;

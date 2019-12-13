@@ -6,6 +6,8 @@
           v-bind:playerNumber="1"
           v-bind:player="player1"
           v-bind:score="player1_score"
+          v-on:increment-score="updateScore(1, 'player1_score')"
+          v-on:decrement-score="updateScore(-1, 'player1_score')"
         />
       </v-col>
 
@@ -129,6 +131,8 @@
           v-bind:playerNumber="2"
           v-bind:player="player2"
           v-bind:score="player2_score"
+          v-on:increment-score="updateScore(1, 'player2_score')"
+          v-on:decrement-score="updateScore(-1, 'player2_score')"
         />
       </v-col>
     </v-row>
@@ -165,8 +169,8 @@ export default {
       matchMessage: undefined,
       player1: undefined,
       player2: undefined,
-      player1_score: 21,
-      player2_score: 15,
+      player1_score: 0,
+      player2_score: 0,
       player1_games_won: 0,
       player2_games_won: 0,
       matchSubmittedDialog: false,
@@ -208,6 +212,9 @@ export default {
     }
   },
   methods: {
+    updateScore(amount, playerScore) {
+      this[playerScore] += amount;
+    },
     setFormFields(response) {
       if (response) this.games = response.games;
 
